@@ -59,9 +59,9 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
 @interface ScrollViewController ()<UIScrollViewDelegate,SegmentViewDelegate,UIGestureRecognizerDelegate> {
     
     CGFloat currentScorllY;
-    UIView *toolView;
-    NSMutableArray *tableArray;
-    __block BOOL isVertical;//是否是垂直
+    BOOL isEndScorll; // 是否滚动停止了
+    BOOL isTopEndScorll; // 顶部停止
+    BOOL isBottomEndScorll;
     NSMutableArray *tableViews;
 }
 @property (nonatomic, strong) UIView *containerView;
@@ -92,7 +92,7 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     [self.containerView addGestureRecognizer:pan];
     
     self.dynamicItem = [[CSCDynamicItem alloc] init];
-    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.containerView];
     
 }
 
@@ -118,6 +118,7 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     self.scollView = [[UIScrollView alloc]init];
     self.scollView.showsVerticalScrollIndicator = NO;
     self.scollView.showsHorizontalScrollIndicator = NO;
+    self.scollView.bounces = NO;
     self.scollView.delegate = self;
     self.scollView.pagingEnabled = YES;
     self.scollView.backgroundColor = [UIColor colorWithRed:((float)arc4random_uniform(256) / 255.0) green:((float)arc4random_uniform(256) / 255.0) blue:((float)arc4random_uniform(256) / 255.0) alpha:1.0];
@@ -223,16 +224,22 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
             self.dynamicItem.center = self.view.bounds.origin;
             //velocity是在手势结束的时候获取的竖直方向的手势速度
             CGPoint velocity = [panGestureRecognizer velocityInView:self.containerView];
+            
             UIDynamicItemBehavior *inertialBehavior = [[UIDynamicItemBehavior alloc] initWithItems:@[self.dynamicItem]];
             [inertialBehavior addLinearVelocity:CGPointMake(0, velocity.y) forItem:self.dynamicItem];
-            // 通过尝试取2.0比较像系统的效果
-            inertialBehavior.resistance = 2.0;
+            // 通过尝试取2.0比较像系统的效果(线速度阻尼)
+            inertialBehavior.resistance = 2.8;
             __block CGPoint lastCenter = CGPointZero;
             __weak typeof(self) weakSelf = self;
             inertialBehavior.action = ^{
+                isEndScorll = NO;
+                isTopEndScorll = NO;
+                isBottomEndScorll = NO;
                 //得到每次移动的距离
                 CGFloat currentY = weakSelf.dynamicItem.center.y - lastCenter.y;
                 lastCenter = weakSelf.dynamicItem.center;
+                [self _dealScrolDynamic:currentY];
+                NSLog(@"currentY:%f lastCenter:%@",currentY,NSStringFromCGPoint(lastCenter));
             };
             [self.animator addBehavior:inertialBehavior];
             self.decelerationBehavior = inertialBehavior;
@@ -247,6 +254,93 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     [panGestureRecognizer setTranslation:CGPointZero inView:self.containerView];
 }
 
+
+- (void)_dealScrolDynamic:(CGFloat)detal{
+    
+    
+    // 往上滑
+    if (detal < 0) {
+        if (self.containerView.y > -KMaxOffsetY+TP_StatusBarAndNavigationBarHeight) {
+            self.containerView.y += detal;
+            
+        }else{
+            currentScorllY -= detal;
+            
+            if (self.tableView.contentSize.height >= self.scollView.height) {
+                if (currentScorllY >= self.tableView.contentSize.height - self.scollView.height) {
+                    currentScorllY = self.tableView.contentSize.height - self.scollView.height;
+                    isEndScorll = YES;
+                    isBottomEndScorll = YES;
+                }
+            }else{
+                currentScorllY = 0;
+                isEndScorll = YES;
+                isTopEndScorll = YES;
+            }
+            
+            [self.tableView setContentOffset:CGPointMake(0, currentScorllY)];
+            self.containerView.y = - KMaxOffsetY+TP_StatusBarAndNavigationBarHeight;
+//            targetPoint = CGPointZero;
+        }
+        
+    }
+    else{// 往下f滑
+        
+        if (currentScorllY>0) {
+            currentScorllY -= detal;
+            if (currentScorllY <= 0) {
+                currentScorllY = 0;
+                isTopEndScorll = YES;
+            }
+            [self.tableView setContentOffset:CGPointMake(0, currentScorllY)];
+            
+        }else{
+            self.containerView.y = self.containerView.y + detal;
+            if (self.containerView.y >= TP_StatusBarAndNavigationBarHeight) {
+                self.containerView.y = TP_StatusBarAndNavigationBarHeight;
+                isEndScorll = YES;
+                isTopEndScorll = YES;
+            }
+        }
+    }
+    
+    CGPoint targetPoint = CGPointZero;
+    if (isTopEndScorll) {
+        targetPoint = CGPointMake(self.containerView.x, self.containerView.y);
+    }
+    if (isBottomEndScorll) {
+        targetPoint = CGPointMake(self.tableView.x, self.tableView.y);
+    }
+    if (isEndScorll) {
+         [self.animator removeBehavior:self.decelerationBehavior];
+        __weak typeof(self) weakSelf = self;
+        UIAttachmentBehavior *springBehavior = [[UIAttachmentBehavior alloc] initWithItem:self.containerView attachedToAnchor:CGPointMake(self.view.centerX, self.view.centerY)];
+        springBehavior.length = 0;
+        springBehavior.damping = 1;
+        springBehavior.frequency = 1.6;
+//        springBehavior.action = ^{
+////            if (isTopEndScorll) {
+////                weakSelf.containerView.centerY = weakSelf.dynamicItem.center.y;
+////            }
+////            if (isBottomEndScorll) {
+////                weakSelf.tableView.centerY = weakSelf.dynamicItem.center.y;
+////            }
+//            NSLog(@"springBehavior ---- ");
+//        };
+        [self.animator addBehavior:springBehavior];
+        self.springBehavior = springBehavior;
+       
+    }
+   
+    
+}
+
+- (CGPoint)_maxBoundsOrigin
+{
+    return CGPointMake(0,
+                       self.tableView.contentSize.height - self.tableView.height);
+}
+
 #pragma mark - *** UIScrollViewDelegate
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     CGFloat offset = scrollView.contentOffset.x;
@@ -255,6 +349,7 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
 
     self.tableView = tableViews[index];
     currentScorllY = self.tableView.contentOffset.y;
+    [self.animator removeBehavior:self.decelerationBehavior];
 }
 
 #pragma mark - *** SegmentViewDelegate
@@ -263,6 +358,7 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     
     self.tableView = tableViews[index];
     currentScorllY = self.tableView.contentOffset.y;
+    [self.animator removeBehavior:self.decelerationBehavior];
 }
 
 
