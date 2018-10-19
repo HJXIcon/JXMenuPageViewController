@@ -21,6 +21,8 @@
 		5D3A785118FF1912006CCAB3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5D3A784F18FF1912006CCAB3 /* InfoPlist.strings */; };
 		5D3A785318FF1912006CCAB3 /* CustomScrollViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3A785218FF1912006CCAB3 /* CustomScrollViewTests.m */; };
 		5D3A785E18FF1923006CCAB3 /* CustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3A785D18FF1923006CCAB3 /* CustomScrollView.m */; };
+		8468F98D21797A1A00EF759E /* JXCustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8468F98C21797A1A00EF759E /* JXCustomScrollView.m */; };
+		8468F99021797B6000EF759E /* JXScrollTopWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8468F98F21797B6000EF759E /* JXScrollTopWindow.m */; };
 		846B366F21758074006B049A /* ScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 846B366E21758074006B049A /* ScrollViewController.m */; };
 		846B3672217580EB006B049A /* TabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 846B3671217580EB006B049A /* TabBarController.m */; };
 		846B367521758E10006B049A /* SegmentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 846B367421758E10006B049A /* SegmentView.m */; };
@@ -63,6 +65,10 @@
 		5D3A785218FF1912006CCAB3 /* CustomScrollViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomScrollViewTests.m; sourceTree = "<group>"; };
 		5D3A785C18FF1923006CCAB3 /* CustomScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomScrollView.h; sourceTree = "<group>"; };
 		5D3A785D18FF1923006CCAB3 /* CustomScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomScrollView.m; sourceTree = "<group>"; };
+		8468F98B21797A1A00EF759E /* JXCustomScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JXCustomScrollView.h; sourceTree = "<group>"; };
+		8468F98C21797A1A00EF759E /* JXCustomScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JXCustomScrollView.m; sourceTree = "<group>"; };
+		8468F98E21797B6000EF759E /* JXScrollTopWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JXScrollTopWindow.h; sourceTree = "<group>"; };
+		8468F98F21797B6000EF759E /* JXScrollTopWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JXScrollTopWindow.m; sourceTree = "<group>"; };
 		846B366D21758074006B049A /* ScrollViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScrollViewController.h; sourceTree = "<group>"; };
 		846B366E21758074006B049A /* ScrollViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScrollViewController.m; sourceTree = "<group>"; };
 		846B3670217580EB006B049A /* TabBarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabBarController.h; sourceTree = "<group>"; };
@@ -150,6 +156,10 @@
 				5D3A782E18FF1912006CCAB3 /* Supporting Files */,
 				5D3A783C18FF1912006CCAB3 /* ViewController.h */,
 				5D3A783D18FF1912006CCAB3 /* ViewController.m */,
+				8468F98E21797B6000EF759E /* JXScrollTopWindow.h */,
+				8468F98F21797B6000EF759E /* JXScrollTopWindow.m */,
+				8468F98B21797A1A00EF759E /* JXCustomScrollView.h */,
+				8468F98C21797A1A00EF759E /* JXCustomScrollView.m */,
 				846B366D21758074006B049A /* ScrollViewController.h */,
 				846B366E21758074006B049A /* ScrollViewController.m */,
 				846B367321758E10006B049A /* SegmentView.h */,
@@ -300,9 +310,11 @@
 			files = (
 				846B368421759C21006B049A /* HeaderView.m in Sources */,
 				846B367821758E67006B049A /* CategoryListView.m in Sources */,
+				8468F98D21797A1A00EF759E /* JXCustomScrollView.m in Sources */,
 				846B3672217580EB006B049A /* TabBarController.m in Sources */,
 				5D3A783E18FF1912006CCAB3 /* ViewController.m in Sources */,
 				5D3A783818FF1912006CCAB3 /* AppDelegate.m in Sources */,
+				8468F99021797B6000EF759E /* JXScrollTopWindow.m in Sources */,
 				846B367B21758E7D006B049A /* FoodListView.m in Sources */,
 				5D3A785E18FF1923006CCAB3 /* CustomScrollView.m in Sources */,
 				846B36812175917D006B049A /* UIView+Extension.m in Sources */,

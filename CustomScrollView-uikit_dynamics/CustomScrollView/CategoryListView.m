@@ -8,7 +8,7 @@
 
 #import "CategoryListView.h"
 
-@interface CategoryListView ()<UITableViewDataSource>
+@interface CategoryListView ()<UITableViewDataSource,UITableViewDelegate>
 
 
 @end
@@ -19,6 +19,7 @@
     if (_tableView == nil) {
         _tableView = [[UITableView alloc]initWithFrame:[UIScreen mainScreen].bounds style:UITableViewStylePlain];
         _tableView.dataSource = self;
+        _tableView.delegate = self;
         _tableView.tableFooterView = [[UIView alloc]init];
         _tableView.scrollsToTop = NO;
         _tableView.scrollEnabled = NO;
@@ -54,5 +55,8 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSLog(@"Category == didSelectRowAtIndexPath");
+}
 
 @end
